@@ -7,6 +7,7 @@
 //
 
 #import "MSGridline.h"
+#import "Masonry.h"
 
 @implementation MSGridline
 

@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@class MSEvent;
+@class ITVisite;
 
 @interface MSEventCell : UICollectionViewCell
 
-@property (nonatomic, weak) MSEvent *event;
+@property (nonatomic, weak) ITVisite *event;
 
 @property (nonatomic, strong) UILabel *title;
 @property (nonatomic, strong) UILabel *location;

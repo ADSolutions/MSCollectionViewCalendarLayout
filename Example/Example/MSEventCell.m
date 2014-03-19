@@ -7,7 +7,9 @@
 //
 
 #import "MSEventCell.h"
-#import "MSEvent.h"
+#import "Masonry.h"
+#import "ITVisite.h"
+#import "ITClienti.h"
 
 @interface MSEventCell ()
 
@@ -98,11 +100,14 @@
 
 #pragma mark - MSEventCell
 
-- (void)setEvent:(MSEvent *)event
+- (void)setEvent:(ITVisite *)event
 {
-    _event = event;
-    self.title.attributedText = [[NSAttributedString alloc] initWithString:event.title attributes:[self titleAttributesHighlighted:self.selected]];
-    self.location.attributedText = [[NSAttributedString alloc] initWithString:event.location attributes:[self subtitleAttributesHighlighted:self.selected]];;
+//    _event = event;
+    if (!event) {
+        return;
+    }
+    self.title.attributedText = [[NSAttributedString alloc] initWithString:event.cliente.ragioneSociale attributes:[self titleAttributesHighlighted:self.selected]];
+    self.location.attributedText = [[NSAttributedString alloc] initWithString:event.cliente.via attributes:[self subtitleAttributesHighlighted:self.selected]];;
 }
 
 - (void)updateColors

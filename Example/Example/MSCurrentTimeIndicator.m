@@ -7,6 +7,7 @@
 //
 
 #import "MSCurrentTimeIndicator.h"
+#import "Masonry.h"
 
 @interface MSCurrentTimeIndicator ()
 
@@ -28,7 +29,6 @@
         self.time.font = [UIFont boldSystemFontOfSize:10.0];
         self.time.textColor = [UIColor colorWithHexString:@"fd3935"];
         [self addSubview:self.time];
-        
         [self.time makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(self.centerY);
             make.right.equalTo(self.right).offset(-5.0);

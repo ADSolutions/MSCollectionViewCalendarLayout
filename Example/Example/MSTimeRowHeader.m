@@ -7,6 +7,7 @@
 //
 
 #import "MSTimeRowHeader.h"
+#import "Masonry.h"
 
 @implementation MSTimeRowHeader
 

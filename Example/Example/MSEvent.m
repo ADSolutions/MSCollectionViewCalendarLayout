@@ -19,7 +19,7 @@
 
 - (NSDate *)day
 {
-    return [self.start beginningOfDay];
+    return nil;
 }
 
 @end

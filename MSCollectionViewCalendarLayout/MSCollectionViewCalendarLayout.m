@@ -27,7 +27,7 @@
 //
 
 #import "MSCollectionViewCalendarLayout.h"
-#import <CupertinoYankee/NSDate+CupertinoYankee.h>
+#import "Masonry.h"
 
 NSString * const MSCollectionElementKindTimeRowHeader = @"MSCollectionElementKindTimeRow";
 NSString * const MSCollectionElementKindDayColumnHeader = @"MSCollectionElementKindDayHeader";

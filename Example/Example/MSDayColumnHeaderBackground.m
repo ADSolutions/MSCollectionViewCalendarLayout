@@ -7,6 +7,7 @@
 //
 
 #import "MSDayColumnHeaderBackground.h"
+#import "Masonry.h"
 
 @implementation MSDayColumnHeaderBackground
 

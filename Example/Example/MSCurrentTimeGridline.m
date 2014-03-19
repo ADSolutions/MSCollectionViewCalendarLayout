@@ -7,6 +7,7 @@
 //
 
 #import "MSCurrentTimeGridline.h"
+#import "Masonry.h"
 
 @implementation MSCurrentTimeGridline
 

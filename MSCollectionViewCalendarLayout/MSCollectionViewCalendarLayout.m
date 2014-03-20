@@ -87,11 +87,12 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
 @property (nonatomic, strong) NSCache *cachedEndTimeDateComponents;
 @property (nonatomic, strong) NSCache *cachedCurrentDateComponents;
 @property (nonatomic, assign) CGFloat cachedMaxColumnHeight;
-@property (nonatomic, assign) NSInteger cachedEarliestHour;
-@property (nonatomic, assign) NSInteger cachedLatestHour;
+
 @property (nonatomic, strong) NSMutableDictionary *cachedColumnHeights;
 @property (nonatomic, strong) NSMutableDictionary *cachedEarliestHours;
 @property (nonatomic, strong) NSMutableDictionary *cachedLatestHours;
+@property (nonatomic, assign) NSInteger cachedEarliestHour;
+@property (nonatomic, assign) NSInteger cachedLatestHour;
 
 // Registered Decoration Classes
 @property (nonatomic, strong) NSMutableDictionary *registeredDecorationClasses;
@@ -715,8 +716,8 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
     self.cachedEndTimeDateComponents = [NSCache new];
     self.cachedCurrentDateComponents = [NSCache new];
     self.cachedMaxColumnHeight = CGFLOAT_MIN;
-    self.cachedEarliestHour = NSIntegerMax;
-    self.cachedLatestHour = NSIntegerMin;
+    self.cachedEarliestHour = 1;
+    self.cachedLatestHour = 24;
     self.cachedColumnHeights = [NSMutableDictionary new];
     self.cachedEarliestHours = [NSMutableDictionary new];
     self.cachedLatestHours = [NSMutableDictionary new];
@@ -1137,50 +1138,55 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
 
 - (NSInteger)earliestHourForSection:(NSInteger)section
 {
-    if (self.cachedEarliestHours[@(section)]) {
-        return [self.cachedEarliestHours[@(section)] integerValue];
+    if (!self.cachedEarliestHours[@(section)])
+    {
+        self.cachedEarliestHours[@(section)] = @0;
     }
-    NSInteger earliestHour = NSIntegerMax;
-    for (NSInteger item = 0; item < [self.collectionView numberOfItemsInSection:section]; item++) {
-        NSIndexPath *itemIndexPath = [NSIndexPath indexPathForItem:item inSection:section];
-        NSDateComponents *itemStartTime = [self startTimeForIndexPath:itemIndexPath];
-        if (itemStartTime.hour < earliestHour) {
-            earliestHour = itemStartTime.hour;
-        }
-    }
-    if (earliestHour != NSIntegerMax) {
-        self.cachedEarliestHours[@(section)] = @(earliestHour);
-        return earliestHour;
-    } else {
-        return 0;
-    }
+//    NSInteger earliestHour = NSIntegerMax;
+//    for (NSInteger item = 0; item < [self.collectionView numberOfItemsInSection:section]; item++) {
+//        NSIndexPath *itemIndexPath = [NSIndexPath indexPathForItem:item inSection:section];
+//        NSDateComponents *itemStartTime = [self startTimeForIndexPath:itemIndexPath];
+//        if (itemStartTime.hour < earliestHour) {
+//            earliestHour = itemStartTime.hour;
+//        }
+//    }
+//    if (earliestHour != NSIntegerMax) {
+//        self.cachedEarliestHours[@(section)] = @(earliestHour);
+//        return earliestHour;
+//    } else {
+//        return 0;
+//    }
+    
+    return [self.cachedEarliestHours[@(section)] integerValue];
 }
 
 - (NSInteger)latestHourForSection:(NSInteger)section
 {
-    if (self.cachedLatestHours[@(section)]) {
-        return [self.cachedLatestHours[@(section)] integerValue];
+    if (!self.cachedLatestHours[@(section)])
+    {
+        self.cachedLatestHours[@(section)] = @23;
     }
-    NSInteger latestHour = NSIntegerMin;
-    for (NSInteger item = 0; item < [self.collectionView numberOfItemsInSection:section]; item++) {
-        NSIndexPath *itemIndexPath = [NSIndexPath indexPathForItem:item inSection:section];
-        NSDateComponents *itemEndTime = [self endTimeForIndexPath:itemIndexPath];
-        NSInteger itemEndTimeHour;
-        if ([self dayForSection:section].day == itemEndTime.day) {
-            itemEndTimeHour = (itemEndTime.hour + ((itemEndTime.minute > 0) ? 1 : 0));
-        } else {
-            itemEndTimeHour = [[NSCalendar currentCalendar] maximumRangeOfUnit:NSHourCalendarUnit].length + (itemEndTime.hour + ((itemEndTime.minute > 0) ? 1 : 0));;
-        }
-        if (itemEndTimeHour > latestHour) {
-            latestHour = itemEndTimeHour;
-        }
-    }
-    if (latestHour != NSIntegerMin) {
-        self.cachedLatestHours[@(section)] = @(latestHour);
-        return latestHour;
-    } else {
-        return 0;
-    }
+//    NSInteger latestHour = NSIntegerMin;
+//    for (NSInteger item = 0; item < [self.collectionView numberOfItemsInSection:section]; item++) {
+//        NSIndexPath *itemIndexPath = [NSIndexPath indexPathForItem:item inSection:section];
+//        NSDateComponents *itemEndTime = [self endTimeForIndexPath:itemIndexPath];
+//        NSInteger itemEndTimeHour;
+//        if ([self dayForSection:section].day == itemEndTime.day) {
+//            itemEndTimeHour = (itemEndTime.hour + ((itemEndTime.minute > 0) ? 1 : 0));
+//        } else {
+//            itemEndTimeHour = [[NSCalendar currentCalendar] maximumRangeOfUnit:NSHourCalendarUnit].length + (itemEndTime.hour + ((itemEndTime.minute > 0) ? 1 : 0));;
+//        }
+//        if (itemEndTimeHour > latestHour) {
+//            latestHour = itemEndTimeHour;
+//        }
+//    }
+//    if (latestHour != NSIntegerMin) {
+//        self.cachedLatestHours[@(section)] = @(latestHour);
+//        return latestHour;
+//    } else {
+//        return 0;
+//    }
+    return [self.cachedLatestHours[@(section)] integerValue];
 }
 
 #pragma mark Delegate Wrappers

@@ -60,11 +60,14 @@
 {
     _currentDay = currentDay;
     
-    if (currentDay) {
+    if (currentDay)
+    {
         self.title.textColor = [UIColor whiteColor];
         self.title.font = [UIFont boldSystemFontOfSize:16.0];
         self.titleBackground.backgroundColor = [UIColor colorWithHexString:@"fd3935"];
-    } else {
+    }
+    else
+    {
         self.title.font = [UIFont systemFontOfSize:16.0];
         self.title.textColor = [UIColor blackColor];
         self.titleBackground.backgroundColor = [UIColor clearColor];

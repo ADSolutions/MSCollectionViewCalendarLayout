@@ -25,11 +25,23 @@
             make.centerY.equalTo(self.centerY);
             make.right.equalTo(self.right).offset(-5.0);
         }];
+        
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(receivedTouch)];
+        [self addGestureRecognizer:tapGesture];
     }
     return self;
 }
 
 #pragma mark - MSTimeRowHeader
+
+-(void)receivedTouch
+{
+    BTLog(@"Received Touch");
+    BTLog(@"Data: %@",_time);
+    
+    NSDate *startingDate = _time;
+    NSDate *endingDate = [_time dateByAddingTimeInterval:3600];
+}
 
 - (void)setTime:(NSDate *)time
 {

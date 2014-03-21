@@ -18,6 +18,9 @@
 @end
 
 @implementation MSEventCell
+{
+    BOOL _isValidEvent;
+}
 
 #pragma mark - UIView
 
@@ -102,16 +105,37 @@
 
 - (void)setEvent:(ITVisite *)event
 {
-//    _event = event;
+    //    _event = event;
     if (!event) {
         return;
     }
-    self.title.attributedText = [[NSAttributedString alloc] initWithString:event.cliente.ragioneSociale attributes:[self titleAttributesHighlighted:self.selected]];
-    self.location.attributedText = [[NSAttributedString alloc] initWithString:event.cliente.via attributes:[self subtitleAttributesHighlighted:self.selected]];;
+    
+    @try
+    {
+        self.title.attributedText = [[NSAttributedString alloc] initWithString:event.cliente.ragioneSociale attributes:[self titleAttributesHighlighted:self.selected]];
+        self.location.attributedText = [[NSAttributedString alloc] initWithString:event.cliente.via attributes:[self subtitleAttributesHighlighted:self.selected]];
+        _isValidEvent = YES;
+    }
+    @catch (NSException *ex)
+    {
+        self.title.attributedText = [[NSAttributedString alloc] initWithString:@"" attributes:[self titleAttributesHighlighted:self.selected]];
+        self.location.attributedText = [[NSAttributedString alloc] initWithString:@"" attributes:[self subtitleAttributesHighlighted:self.selected]];
+        _isValidEvent = NO;
+    }
+    
+    [self updateColors];
 }
 
 - (void)updateColors
 {
+    if (!_isValidEvent)
+    {
+        self.contentView.backgroundColor = [UIColor clearColor];
+        self.borderView.backgroundColor = [UIColor clearColor];
+        self.title.textColor = [UIColor clearColor];
+        self.location.textColor = [UIColor clearColor];
+        return;
+    }
     self.contentView.backgroundColor = [self backgroundColorHighlighted:self.selected];
     self.borderView.backgroundColor = [self borderColor];
     self.title.textColor = [self textColorHighlighted:self.selected];
@@ -125,10 +149,10 @@
     paragraphStyle.hyphenationFactor = 1.0;
     paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
     return @{
-        NSFontAttributeName : [UIFont boldSystemFontOfSize:12.0],
-        NSForegroundColorAttributeName : [self textColorHighlighted:highlighted],
-        NSParagraphStyleAttributeName : paragraphStyle
-    };
+             NSFontAttributeName : [UIFont boldSystemFontOfSize:12.0],
+             NSForegroundColorAttributeName : [self textColorHighlighted:highlighted],
+             NSParagraphStyleAttributeName : paragraphStyle
+             };
 }
 
 - (NSDictionary *)subtitleAttributesHighlighted:(BOOL)highlighted
@@ -138,10 +162,10 @@
     paragraphStyle.hyphenationFactor = 1.0;
     paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
     return @{
-        NSFontAttributeName : [UIFont systemFontOfSize:12.0],
-        NSForegroundColorAttributeName : [self textColorHighlighted:highlighted],
-        NSParagraphStyleAttributeName : paragraphStyle
-    };
+             NSFontAttributeName : [UIFont systemFontOfSize:12.0],
+             NSForegroundColorAttributeName : [self textColorHighlighted:highlighted],
+             NSParagraphStyleAttributeName : paragraphStyle
+             };
 }
 
 - (UIColor *)backgroundColorHighlighted:(BOOL)selected

@@ -814,12 +814,12 @@ NSUInteger const MSCollectionMinBackgroundZ = 0.0;
     [self.cachedCurrentDateComponents removeAllObjects];
     
     // Invalidate cached interface sizing values
-    self.cachedEarliestHour = NSIntegerMax;
-    self.cachedLatestHour = NSIntegerMin;
+//    self.cachedEarliestHour = NSIntegerMax;
+//    self.cachedLatestHour = NSIntegerMin;
     self.cachedMaxColumnHeight = CGFLOAT_MIN;
     [self.cachedColumnHeights removeAllObjects];
-    [self.cachedEarliestHours removeAllObjects];
-    [self.cachedLatestHours removeAllObjects];
+//    [self.cachedEarliestHours removeAllObjects];
+//    [self.cachedLatestHours removeAllObjects];
     
     // Invalidate cached item attributes
     [self.itemAttributes removeAllObjects];

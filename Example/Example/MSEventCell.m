@@ -7,20 +7,21 @@
 //
 
 #import "MSEventCell.h"
-#import "Masonry.h"
-#import "ITVisite.h"
-#import "ITClienti.h"
+#import "MSEvent.h"
 
 @interface MSEventCell ()
 
-@property (nonatomic, strong) UIView *borderView;
+- (UIColor *)cellBackgroundColorSelected:(BOOL)selected;
+- (UIColor *)cellTextColorSelected:(BOOL)selected;
+- (UIColor *)cellBorderColorSelected:(BOOL)selected;
+- (UIColor *)cellTextShadowColorSelected:(BOOL)selected;
+- (CGSize)cellTextShadowOffsetSelected:(BOOL)selected;
+
+- (void)updateColors;
 
 @end
 
 @implementation MSEventCell
-{
-    BOOL _isValidEvent;
-}
 
 #pragma mark - UIView
 
@@ -32,155 +33,142 @@
         self.layer.rasterizationScale = [[UIScreen mainScreen] scale];
         self.layer.shouldRasterize = YES;
         
-        self.layer.shadowColor = [[UIColor blackColor] CGColor];
-        self.layer.shadowOffset = CGSizeMake(0.0, 4.0);
-        self.layer.shadowRadius = 5.0;
-        self.layer.shadowOpacity = 0.0;
+        self.contentView.layer.borderWidth = 1.0;
+        self.contentView.layer.cornerRadius = 4.0;
+        self.contentView.layer.masksToBounds = YES;
         
-        self.borderView = [UIView new];
-        [self.contentView addSubview:self.borderView];
+        self.time = [UILabel new];
+        self.time.backgroundColor = [UIColor clearColor];
+        self.time.numberOfLines = 0;
+        self.time.font = [UIFont systemFontOfSize:12.0];
+        [self.contentView addSubview:self.time];
         
         self.title = [UILabel new];
-        self.title.numberOfLines = 0;
         self.title.backgroundColor = [UIColor clearColor];
+        self.title.numberOfLines = 0;
+        self.title.font = [UIFont boldSystemFontOfSize:12.0];
         [self.contentView addSubview:self.title];
         
         self.location = [UILabel new];
-        self.location.numberOfLines = 0;
         self.location.backgroundColor = [UIColor clearColor];
+        self.location.numberOfLines = 0;
+        self.location.font = [UIFont systemFontOfSize:12.0];
         [self.contentView addSubview:self.location];
         
         [self updateColors];
-        
-        CGFloat borderWidth = 2.0;
-        CGFloat contentMargin = 2.0;
-        UIEdgeInsets contentPadding = UIEdgeInsetsMake(1.0, (borderWidth + 4.0), 1.0, 4.0);
-        
-        [self.borderView makeConstraints:^(MASConstraintMaker *make) {
-            make.height.equalTo(self.height);
-            make.width.equalTo(@(borderWidth));
-            make.left.equalTo(self.left);
-            make.top.equalTo(self.top);
-        }];
-        
-        [self.title makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.top).offset(contentPadding.top);
-            make.left.equalTo(self.left).offset(contentPadding.left);
-            make.right.equalTo(self.right).offset(-contentPadding.right);
-        }];
-        
-        [self.location makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.title.bottom).offset(contentMargin);
-            make.left.equalTo(self.left).offset(contentPadding.left);
-            make.right.equalTo(self.right).offset(-contentPadding.right);
-            make.bottom.lessThanOrEqualTo(self.bottom).offset(-contentPadding.bottom);
-        }];
     }
     return self;
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    UIEdgeInsets padding = UIEdgeInsetsMake(4.0, 5.0, 4.0, 5.0);
+    CGFloat contentMargin = 2.0;
+    CGFloat contentWidth = (CGRectGetWidth(self.contentView.frame) - padding.left - padding.right);
+    
+    CGSize maxTimeSize = CGSizeMake(contentWidth, CGRectGetHeight(self.contentView.frame) - padding.top - padding.bottom);
+    CGSize timeSize = [self.time.text sizeWithFont:self.time.font constrainedToSize:maxTimeSize lineBreakMode:self.time.lineBreakMode];
+    CGRect timeFrame = self.time.frame;
+    timeFrame.size = timeSize;
+    timeFrame.origin.x = padding.left;
+    timeFrame.origin.y = padding.top;
+    self.time.frame = timeFrame;
+        
+    CGSize maxTitleSize = CGSizeMake(contentWidth, CGRectGetHeight(self.contentView.frame) - (CGRectGetMaxY(timeFrame) + contentMargin) - padding.bottom);
+    CGSize titleSize = [self.title.text sizeWithFont:self.title.font constrainedToSize:maxTitleSize lineBreakMode:self.title.lineBreakMode];
+    CGRect titleFrame = self.title.frame;
+    titleFrame.size = titleSize;
+    titleFrame.origin.x = padding.left;
+    titleFrame.origin.y = (CGRectGetMaxY(timeFrame) + contentMargin);
+    self.title.frame = titleFrame;
+    
+    CGSize maxLocationSize = CGSizeMake(contentWidth, CGRectGetHeight(self.contentView.frame) - (CGRectGetMaxY(titleFrame) + contentMargin) - padding.bottom);
+    CGSize locationSize = [self.location.text sizeWithFont:self.location.font constrainedToSize:maxLocationSize lineBreakMode:self.location.lineBreakMode];
+    CGRect locationFrame = self.location.frame;
+    locationFrame.size = locationSize;
+    locationFrame.origin.x = padding.left;
+    locationFrame.origin.y = (CGRectGetMaxY(titleFrame) + contentMargin);
+    self.location.frame = locationFrame;
 }
 
 #pragma mark - UICollectionViewCell
 
 - (void)setSelected:(BOOL)selected
 {
-    if (selected && (self.selected != selected)) {
+    if (selected && self.selected != selected) {
         [UIView animateWithDuration:0.1 animations:^{
-            self.transform = CGAffineTransformMakeScale(1.025, 1.025);
-            self.layer.shadowOpacity = 0.2;
+            self.transform = CGAffineTransformMakeScale(1.05, 1.05);
         } completion:^(BOOL finished) {
             [UIView animateWithDuration:0.1 animations:^{
                 self.transform = CGAffineTransformIdentity;
             }];
         }];
-    } else if (selected) {
-        self.layer.shadowOpacity = 0.2;
-    } else {
-        self.layer.shadowOpacity = 0.0;
     }
-    [super setSelected:selected]; // Must be here for animation to fire
+    
+    [super setSelected:selected];
+    
     [self updateColors];
 }
 
 #pragma mark - MSEventCell
 
-- (void)setEvent:(ITVisite *)event
+- (void)setEvent:(MSEvent *)event
 {
-    //    _event = event;
-    if (!event) {
-        return;
-    }
+    _event = event;
     
-    @try
-    {
-        self.title.attributedText = [[NSAttributedString alloc] initWithString:event.cliente.ragioneSociale attributes:[self titleAttributesHighlighted:self.selected]];
-        self.location.attributedText = [[NSAttributedString alloc] initWithString:event.cliente.via attributes:[self subtitleAttributesHighlighted:self.selected]];
-        _isValidEvent = YES;
-    }
-    @catch (NSException *ex)
-    {
-        self.title.attributedText = [[NSAttributedString alloc] initWithString:@"" attributes:[self titleAttributesHighlighted:self.selected]];
-        self.location.attributedText = [[NSAttributedString alloc] initWithString:@"" attributes:[self subtitleAttributesHighlighted:self.selected]];
-        _isValidEvent = NO;
-    }
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    dateFormatter.dateFormat = @"h:mm a";
     
-    [self updateColors];
+    self.time.text = [dateFormatter stringFromDate:event.start];
+    self.title.text = event.title;
+    self.location.text = event.location;
+    
+    [self setNeedsLayout];
 }
 
 - (void)updateColors
 {
-    if (!_isValidEvent)
-    {
-        self.contentView.backgroundColor = [UIColor clearColor];
-        self.borderView.backgroundColor = [UIColor clearColor];
-        self.title.textColor = [UIColor clearColor];
-        self.location.textColor = [UIColor clearColor];
-        return;
-    }
-    self.contentView.backgroundColor = [self backgroundColorHighlighted:self.selected];
-    self.borderView.backgroundColor = [self borderColor];
-    self.title.textColor = [self textColorHighlighted:self.selected];
-    self.location.textColor = [self textColorHighlighted:self.selected];
+    self.contentView.backgroundColor = [self cellBackgroundColorSelected:self.selected];
+    self.contentView.layer.borderColor = [[self cellBorderColorSelected:self.selected] CGColor];
+    
+    self.time.textColor = [self cellTextColorSelected:self.selected];
+    self.time.shadowColor = [self cellTextShadowColorSelected:self.selected];
+    self.time.shadowOffset = [self cellTextShadowOffsetSelected:self.selected];
+    
+    self.title.textColor = [self cellTextColorSelected:self.selected];
+    self.title.shadowColor = [self cellTextShadowColorSelected:self.selected];
+    self.title.shadowOffset = [self cellTextShadowOffsetSelected:self.selected];
+    
+    self.location.textColor = [self cellTextColorSelected:self.selected];
+    self.location.shadowColor = [self cellTextShadowColorSelected:self.selected];
+    self.location.shadowOffset = [self cellTextShadowOffsetSelected:self.selected];
 }
 
-- (NSDictionary *)titleAttributesHighlighted:(BOOL)highlighted
+- (UIColor *)cellBackgroundColorSelected:(BOOL)selected
 {
-    NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
-    paragraphStyle.alignment = NSTextAlignmentLeft;
-    paragraphStyle.hyphenationFactor = 1.0;
-    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-    return @{
-             NSFontAttributeName : [UIFont boldSystemFontOfSize:12.0],
-             NSForegroundColorAttributeName : [self textColorHighlighted:highlighted],
-             NSParagraphStyleAttributeName : paragraphStyle
-             };
+    return selected ? [[UIColor colorWithHexString:@"165b9b"] colorWithAlphaComponent:0.8] : [[UIColor colorWithHexString:@"b4d0ea"] colorWithAlphaComponent:0.8];
 }
 
-- (NSDictionary *)subtitleAttributesHighlighted:(BOOL)highlighted
+- (UIColor *)cellTextColorSelected:(BOOL)selected
 {
-    NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
-    paragraphStyle.alignment = NSTextAlignmentLeft;
-    paragraphStyle.hyphenationFactor = 1.0;
-    paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-    return @{
-             NSFontAttributeName : [UIFont systemFontOfSize:12.0],
-             NSForegroundColorAttributeName : [self textColorHighlighted:highlighted],
-             NSParagraphStyleAttributeName : paragraphStyle
-             };
+    return selected ? [UIColor whiteColor] : [UIColor colorWithHexString:@"2b77ad"];
 }
 
-- (UIColor *)backgroundColorHighlighted:(BOOL)selected
+- (UIColor *)cellBorderColorSelected:(BOOL)selected
 {
-    return selected ? [UIColor colorWithHexString:@"35b1f1"] : [[UIColor colorWithHexString:@"35b1f1"] colorWithAlphaComponent:0.2];
+    return selected ? [UIColor colorWithHexString:@"0c2e4d"] : [UIColor colorWithHexString:@"2b77ad"];
 }
 
-- (UIColor *)textColorHighlighted:(BOOL)selected
+- (UIColor *)cellTextShadowColorSelected:(BOOL)selected
 {
-    return selected ? [UIColor whiteColor] : [UIColor colorWithHexString:@"21729c"];
+    return selected ? [[UIColor blackColor] colorWithAlphaComponent:0.5] : [[UIColor whiteColor] colorWithAlphaComponent:0.5];
 }
 
-- (UIColor *)borderColor
+- (CGSize)cellTextShadowOffsetSelected:(BOOL)selected
 {
-    return [[self backgroundColorHighlighted:NO] colorWithAlphaComponent:1.0];
+    return selected ? CGSizeMake(0.0, -1.0) : CGSizeMake(0.0, 1.0);
 }
 
 @end

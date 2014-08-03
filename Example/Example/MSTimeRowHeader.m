@@ -36,8 +36,8 @@
 
 -(void)receivedTouch
 {
-    BTLog(@"Received Touch");
-    BTLog(@"Data: %@",_time);
+    CLS_LOG(@"Received Touch");
+    CLS_LOG(@"Data: %@",_time);
     
     NSDate *startingDate = _time;
     NSDate *endingDate = [_time dateByAddingTimeInterval:3600];

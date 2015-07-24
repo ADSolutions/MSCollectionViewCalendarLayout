@@ -29,9 +29,9 @@
         self.time.font = [UIFont boldSystemFontOfSize:10.0];
         self.time.textColor = [UIColor colorWithHexString:@"fd3935"];
         [self addSubview:self.time];
-        [self.time makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.equalTo(self.centerY);
-            make.right.equalTo(self.right).offset(-5.0);
+        [self.time mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerY.equalTo(self.mas_centerY);
+            make.right.equalTo(self.mas_right).offset(-5.0);
         }];
         
         NSCalendar *calendar = [NSCalendar currentCalendar];

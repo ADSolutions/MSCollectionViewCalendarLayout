@@ -21,9 +21,9 @@
         self.title.font = [UIFont systemFontOfSize:12.0];
         [self addSubview:self.title];
         
-        [self.title makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.equalTo(self.centerY);
-            make.right.equalTo(self.right).offset(-5.0);
+        [self.title mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.centerY.equalTo(self.mas_centerY);
+            make.right.equalTo(self.mas_right).offset(-5.0);
         }];
         
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(receivedTouch)];
@@ -36,8 +36,8 @@
 
 -(void)receivedTouch
 {
-    CLS_LOG(@"Received Touch");
-    CLS_LOG(@"Data: %@",_time);
+    NSLog(@"Received Touch");
+    NSLog(@"Data: %@",_time);
     
     NSDate *startingDate = _time;
     NSDate *endingDate = [_time dateByAddingTimeInterval:3600];
